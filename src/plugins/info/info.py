@@ -11,15 +11,57 @@ from ...utils.sql import web_db_config, game_db_config
 
 info = on_command("info", force_whitespace=True)
 
+
 @info.handle()
 async def _(bot: Bot, event: Event, args: Message = CommandArg()):
-    groupId = str(event.get_session_id().split("_")[1]) # QQ群号
-    userId = str(event.get_session_id().split("_")[2]) # QQ号
+    groupId = str(event.get_session_id().split("_")[1])  # QQ群号
+    userId = str(event.get_session_id().split("_")[2])  # QQ号
 
     if not groupId == os.getenv("ADMIN_GROUP_ID"):
+        # 遍历os.getenv("NORMAL_GROUP_ID")，检查groupId是否在其中
+        normal_group_ids = os.getenv("NORMAL_GROUP_ID", "").strip("[]").replace('"', '').split(", ")
+        print(normal_group_ids)
+        if not any(groupId == normalGroupId for normalGroupId in normal_group_ids):
+            await info.finish("本功能仅限已部署的群内使用！")
+            return
+
         logger.info(f"[普通群] {userId} 正在群 {groupId} 使用/info")
         targetQQNumber = userId
-        await info.finish("这个功能还在写（悲）")
+
+        connection = psycopg2.connect(**web_db_config)
+        cursor = connection.cursor()
+        cursor.execute(
+            'SELECT * FROM public."WebUser" WHERE "userQQ" = %s;',
+            (targetQQNumber,),
+        )
+        webUserResults = cursor.fetchall()
+        cursor.close()
+        connection.close()
+
+        if not webUserResults:
+            await info.finish(
+                "没有您的用户信息！\n您没有在XRS网上上注册账号或有卡但没有绑定账号！\n若需绑定请联系管理员！"
+            )
+            return
+        else:
+            connection = psycopg2.connect(**game_db_config)
+            cursor = connection.cursor()
+            cursor.execute(
+                'SELECT * FROM public."User" WHERE "id" = %s;',
+                (webUserResults[0][1],),
+            )
+            gameUserResults = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            lastPlayedAt = datetime.fromtimestamp(gameUserResults[0][13]).strftime(
+                "%Y/%m/%d %H:%M:%S"
+            )
+            lastLoginAt = datetime.fromtimestamp(webUserResults[0][7]).strftime(
+                "%Y/%m/%d %H:%M:%S"
+            )
+            content = f"您的用户信息如下：\n[QQ号] {webUserResults[0][3]}\n[用户名] {webUserResults[0][2]}\n[最后登录时间] {lastLoginAt}\n[最后游玩时间] {lastPlayedAt}\n[抽奖券] {webUserResults[0][9]} 张\n[积累抽数] {webUserResults[0][10]} 抽"
+            await info.finish(content)
+            return
     else:
         logger.info(f"[管理群] {userId} 正在群 {groupId} 使用/info | [参数] {args}")
         if args.extract_plain_text() == "":
@@ -31,7 +73,7 @@ async def _(bot: Bot, event: Event, args: Message = CommandArg()):
             if not targetQQNumber.isdigit():
                 await info.finish("QQ号必须为数字！\n示例：/info 114514")
                 return
-            
+
             connection = psycopg2.connect(**web_db_config)
             cursor = connection.cursor()
             cursor.execute(
@@ -68,11 +110,13 @@ async def _(bot: Bot, event: Event, args: Message = CommandArg()):
                 if gameUserResults[0][5] == True:
                     banInfo = "已封禁"
 
-                content=f"=== 用户信息 ===\n[userId] {webUserResults[0][1]}\n[用户QQ] {webUserResults[0][3]}\n[用户名] {webUserResults[0][2]}\n[抽奖券] {webUserResults[0][9]} 张\n[积累抽数] {webUserResults[0][10]} 抽\n[XR点数] {webUserResults[0][11]} 点\n[最后登录时间] {lastLoginAt}\n[最后游玩时间] {lastPlayedAt}\n[最后登录IP] {webUserResults[0][8]}\n[账户状态] {banInfo}\n\n=== 卡号 ===\n[chipId] {gameUserResults[0][1]}\n[accessCode] {gameUserResults[0][2]}",
+                content = (
+                    f"=== 用户信息 ===\n[userId] {webUserResults[0][1]}\n[用户QQ] {webUserResults[0][3]}\n[用户名] {webUserResults[0][2]}\n[抽奖券] {webUserResults[0][9]} 张\n[积累抽数] {webUserResults[0][10]} 抽\n[XR点数] {webUserResults[0][11]} 点\n[最后登录时间] {lastLoginAt}\n[最后游玩时间] {lastPlayedAt}\n[最后登录IP] {webUserResults[0][8]}\n[账户状态] {banInfo}\n\n=== 卡号 ===\n[chipId] {gameUserResults[0][1]}\n[accessCode] {gameUserResults[0][2]}",
+                )
 
                 # 返回信息
                 await info.finish(content)
             else:
-                content=f"QQ {targetQQNumber} 不存在用户信息哦 ~",
+                content = (f"QQ {targetQQNumber} 不存在用户信息哦 ~",)
                 await info.finish(content)
                 return

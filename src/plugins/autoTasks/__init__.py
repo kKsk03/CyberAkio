@@ -1,0 +1,1 @@
+from .autoBingo import autoBingo
