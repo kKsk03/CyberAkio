@@ -18,7 +18,7 @@ async def _(bot: Bot, event: Event, args: Message = CommandArg()):
     userId = str(event.get_session_id().split("_")[2])  # QQ号
 
     if not groupId == os.getenv("ADMIN_GROUP_ID"):
-        # 遍历os.getenv("NORMAL_GROUP_ID")，检查groupId是否在其中
+        # 遍历群组列表检查groupId是否在其中
         normal_group_ids = os.getenv("NORMAL_GROUP_ID", "").strip("[]").replace('"', '').split(", ")
         print(normal_group_ids)
         if not any(groupId == normalGroupId for normalGroupId in normal_group_ids):
