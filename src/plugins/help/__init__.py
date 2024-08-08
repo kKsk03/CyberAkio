@@ -9,7 +9,8 @@ helpMenuContent = (
     "=== 帮助菜单 ===\n"
     "/help - 帮助菜单\n"
     "/bingo - 获取今日Bingo奖品信息\n"
-    "/status - 查询XRS游戏服务器状态"
+    "/status - 查询XRS游戏服务器状态\n"
+    "/info - 查询用户信息"
 )
 
 adminHelpMenuContent = (
