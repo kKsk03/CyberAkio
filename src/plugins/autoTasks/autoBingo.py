@@ -7,6 +7,7 @@ from nonebot.adapters.onebot.v11 import Message, MessageSegment
 
 # Utils
 from ...utils.bingoInfo import (
+    getTodayBingoCustomFramePics,
     getTodayBingoSyogo,
     getTodayBingoCustomFrame,
     getTodayPlateNumber,
@@ -19,16 +20,17 @@ async def autoBingo():
     todaySyogo = getTodayBingoSyogo()  # 获取今日Bingo称号
     todayCustomFrame = getTodayBingoCustomFrame()  # 获取今日Bingo自定义边框
     todayPlateNumber = getTodayPlateNumber()  # 获取今日车牌号
+    todayCustomFramePicSrc = getTodayBingoCustomFramePics()
     date = datetime.now().strftime("%Y/%m/%d")  # 获取今日日期
 
     content = (
-        "=== 今日Bingo奖品已更新 ===\n"
+        "今日Bingo奖品已更新！\n"
         f"<{date}>\n"
         f"[称号] {todaySyogo}\n"
         f"[自定义边框] {todayCustomFrame}\n"
         f"[车牌号] {todayPlateNumber}\n"
     )
-    image = f"https://pics-a1c.pages.dev/website/customFrames/{todayCustomFrame}.png"
+    image = todayCustomFramePicSrc
 
     # 组合消息
     message = Message([MessageSegment.text(content), MessageSegment.image(image)])

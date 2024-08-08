@@ -19,6 +19,7 @@ adminHelpMenuContent = (
     "/delcode <QQ号> - 删除该QQ号的邀请码\n"
     "/codelist - 查看所有邀请码\n"
     "/info <QQ号> - 查询该QQ号用户信息"
+    "/opu <competitionId> - 查询该OCM的参与玩家列表"
 )
 
 @help.handle()

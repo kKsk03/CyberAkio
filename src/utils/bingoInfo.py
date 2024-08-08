@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 listSyogo = {
     "0101": "新年最速ビンゴ",
@@ -779,3 +780,16 @@ def getTodayPlateNumber() -> str:
         chr(ord(c) + 0xFEE0) if "!" <= c <= "~" else c for c in plate_number
     )
     return fullWidthPlateNumber
+
+
+def getTodayBingoCustomFramePics() -> str:
+    # 获取今天的自定义边框
+    todayBingoCustomFrame = getTodayBingoCustomFrame()
+
+    # 使用返回的customFrame名，遍历项目根目录的customFrame.json，找出其对应的图片
+    with open("customFrame.json", "r", encoding="utf-8") as f:
+        customFrames = json.load(f)
+        for customFrame in customFrames:
+            if customFrame["customFrame"] == todayBingoCustomFrame:
+                return customFrame["src"]
+    return ""
