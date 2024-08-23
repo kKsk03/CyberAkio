@@ -59,7 +59,7 @@ async def _(bot: Bot, event: Event, args: Message = CommandArg()):
             lastLoginAt = datetime.fromtimestamp(webUserResults[0][7]).strftime(
                 "%Y/%m/%d %H:%M:%S"
             )
-            content = f"您的用户信息如下：\n[QQ号] {webUserResults[0][3]}\n[用户名] {webUserResults[0][2]}\n[最后登录时间] {lastLoginAt}\n[最后游玩时间] {lastPlayedAt}\n[抽奖券] {webUserResults[0][9]} 张\n[积累抽数] {webUserResults[0][10]} 抽"
+            content = f"您的用户信息如下：\n[QQ号] {webUserResults[0][3]}\n[用户名] {webUserResults[0][2]}\n[最后登录时间] {lastLoginAt}\n[最后游玩时间] {lastPlayedAt}\n[抽奖券] {webUserResults[0][9]} 张\n[积累抽数] {webUserResults[0][10]} 抽\n[XR点数] {webUserResults[0][11]} 点"
             await info.finish(content)
             return
     else:
