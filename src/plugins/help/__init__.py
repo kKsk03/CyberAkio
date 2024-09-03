@@ -33,13 +33,19 @@ adminHelpMenuContent = (
     "[查询该QQ号用户信息]\n"
     "👉 /info <QQ号>\n"
     "[查询该OCM的参与玩家列表]\n"
-    "👉 /opu <competitionId>"
+    "👉 /opu <competitionId>\n"
+    "[封禁指定玩家]\n"
+    "👉 /ban <userId>\n"
+    "[解封指定玩家]\n"
+    "👉 /unban <userId>"
 )
 
 superAdminHelpMenuContent = (
     "=== 超级管理员菜单 ===\n"
     "[超级管理员菜单]\n"
     "👉 /help\n"
+    "[查询该QQ号用户信息]\n"
+    "👉 /info <QQ号>\n"
     "[增加用户的XR点数]\n"
     "👉 /addxr <userId> <数量>\n"
     "[减少用户的XR点数]\n"
