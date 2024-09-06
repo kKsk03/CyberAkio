@@ -14,7 +14,7 @@ async def _(bot: Bot, event: GroupIncreaseNoticeEvent):
     user = event.get_user_id()
     userInfo = await bot.get_group_member_info(group_id=event.group_id, user_id=user, no_cache=False)
     print(userInfo)
-    await member.finish(f'欢迎新人 "{userInfo.get("nickname")}" 加入FLYHIGH XRS!\n[游戏安装] https://a.icnn.cn/yGsXNa\n[官网] https://xenon-rs.tech/\n新用户注册请阅读安装教程中的新卡发行部分！')
+    await member.finish(f'欢迎新人 "{userInfo.get("nickname")}" 加入FLYHIGH XRS!\n[游戏安装] https://sl.kksk03.fun/cXMx\n[官网] https://xenon-rs.tech/\n新用户注册请阅读安装教程中的新卡发行部分！')
 
 @member.handle()
 async def _(bot: Bot, event: GroupDecreaseNoticeEvent):
